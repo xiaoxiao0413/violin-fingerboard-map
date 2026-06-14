@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>小提琴公式指板图</title>
-    <link rel="stylesheet" href="styles.css?v=20260614-formula">
-    <script src="app.js?v=20260614-formula" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260614-note-only">
+    <script src="app.js?v=20260614-note-only" defer></script>
   </head>
   <body>
     <main class="app-shell">
@@ -33,20 +33,6 @@
           <label class="field">
             <span>主音</span>
             <select id="tonic" name="tonic"></select>
-          </label>
-
-          <label class="field">
-            <span>半音范围</span>
-            <select id="range" name="range">
-              <option value="12">0-12 半音</option>
-              <option value="17">0-17 半音</option>
-              <option value="24">0-24 半音</option>
-            </select>
-          </label>
-
-          <label class="field">
-            <span>有效弦长 L0</span>
-            <input id="scale-length" name="scale-length" type="number" min="280" max="360" step="1" value="325" inputmode="numeric">
           </label>
 
           <button class="reset-button" type="button" id="reset">重置</button>

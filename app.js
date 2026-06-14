@@ -1,5 +1,6 @@
 const SCALE_LENGTH_DEFAULT = 325;
-const MAX_SEMITONE_DEFAULT = 12;
+const FINGERBOARD_LENGTH_DEFAULT = 270;
+const MAX_SEMITONE = 24;
 const STORAGE_KEY = "violin-formula-fingerboard-v1";
 
 const LETTERS = ["C", "D", "E", "F", "G", "A", "B"];
@@ -59,7 +60,7 @@ const STRINGS = [
   { name: "E", openLabel: "E5", pc: 4, width: 2.4 },
 ];
 
-const DEFAULT_FINGER_LINES = [
+const FINGER_LINES = [
   { finger: "1", semitone: 2 },
   { finger: "2", semitone: 4 },
   { finger: "3", semitone: 5 },
@@ -86,8 +87,6 @@ const KEY_COLORS = [
 
 const filters = document.querySelector("#filters");
 const tonicSelect = document.querySelector("#tonic");
-const rangeSelect = document.querySelector("#range");
-const scaleLengthInput = document.querySelector("#scale-length");
 const resultTitle = document.querySelector("#result-title");
 const formulaNote = document.querySelector("#formula-note");
 const results = document.querySelector("#results");
@@ -146,16 +145,6 @@ function getMode() {
   return MODES[getModeId()] || MODES.major;
 }
 
-function getMaxSemitone() {
-  const parsed = Number(rangeSelect.value);
-  return Number.isFinite(parsed) ? parsed : MAX_SEMITONE_DEFAULT;
-}
-
-function getScaleLength() {
-  const parsed = Number(scaleLengthInput.value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : SCALE_LENGTH_DEFAULT;
-}
-
 function fillTonicOptions(modeId, preferredValue = "all") {
   const keys = MODES[modeId].keys;
   tonicSelect.replaceChildren();
@@ -188,10 +177,6 @@ function loadSavedState() {
     return {
       mode: modeId,
       tonic: typeof saved.tonic === "string" ? saved.tonic : "all",
-      range: ["12", "17", "24"].includes(String(saved.range)) ? String(saved.range) : String(MAX_SEMITONE_DEFAULT),
-      scaleLength: Number.isFinite(Number(saved.scaleLength))
-        ? String(saved.scaleLength)
-        : String(SCALE_LENGTH_DEFAULT),
     };
   } catch {
     return null;
@@ -205,8 +190,6 @@ function saveState() {
       JSON.stringify({
         mode: getModeId(),
         tonic: tonicSelect.value,
-        range: rangeSelect.value,
-        scaleLength: scaleLengthInput.value,
       })
     );
   } catch {
@@ -258,13 +241,15 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
   const top = 112;
   const stringGap = 62;
   const left = 116;
-  const boardHeight = maxSemitone > 17 ? 760 : maxSemitone > 12 ? 640 : 520;
-  const height = top + boardHeight + 72;
+  const boardHeight = 620;
+  const bridgeY = top + boardHeight;
+  const fingerboardEndY = top + (FINGERBOARD_LENGTH_DEFAULT / scaleLength) * boardHeight;
+  const height = bridgeY + 44;
   const boardLeft = 82;
   const boardRight = left + stringGap * (STRINGS.length - 1) + 34;
   const boardTop = top - 28;
-  const boardBottom = top + boardHeight + 28;
-  const xMax = fingerDistanceMm(maxSemitone, scaleLength);
+  const boardBottom = fingerboardEndY + 24;
+  const xMax = scaleLength;
   const keyColor = KEY_COLORS[keyIndex % KEY_COLORS.length];
   const xs = STRINGS.map((_, index) => left + index * stringGap);
 
@@ -280,6 +265,16 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
   parts.push(`<rect x="${boardLeft}" y="${boardTop}" width="${boardRight - boardLeft}" height="${boardBottom - boardTop}" rx="28" fill="#2a211d"/>`);
   parts.push(`<rect x="${boardLeft + 8}" y="${boardTop + 8}" width="${boardRight - boardLeft - 16}" height="${boardBottom - boardTop - 16}" rx="21" fill="#3b2c25"/>`);
   parts.push(`<line x1="${boardLeft + 12}" y1="${top}" x2="${boardRight - 12}" y2="${top}" stroke="#f4ead9" stroke-width="9" stroke-linecap="round"/>`);
+  parts.push(`<line x1="${boardLeft + 16}" y1="${fingerboardEndY.toFixed(2)}" x2="${boardRight - 16}" y2="${fingerboardEndY.toFixed(2)}" stroke="#1c1512" stroke-width="5" stroke-linecap="round"/>`);
+  parts.push(`<text x="${boardRight + 8}" y="${(fingerboardEndY + 4).toFixed(2)}" text-anchor="start" font-size="12" font-weight="900" fill="#4b3d32">指板末端</text>`);
+  parts.push(`<line x1="${boardLeft + 10}" y1="${bridgeY}" x2="${boardRight - 10}" y2="${bridgeY}" stroke="#d9a45f" stroke-width="10" stroke-linecap="round"/>`);
+  parts.push(`<text x="${boardRight + 8}" y="${bridgeY + 4}" text-anchor="start" font-size="13" font-weight="900" fill="#8a5a20">琴码</text>`);
+  parts.push(`<line x1="48" y1="${top}" x2="48" y2="${bridgeY}" stroke="#0b7887" stroke-width="2"/>`);
+  parts.push(`<line x1="42" y1="${top}" x2="54" y2="${top}" stroke="#0b7887" stroke-width="2"/>`);
+  parts.push(`<line x1="42" y1="${bridgeY}" x2="54" y2="${bridgeY}" stroke="#0b7887" stroke-width="2"/>`);
+  parts.push(`<text x="36" y="${top + boardHeight / 2}" text-anchor="middle" font-size="13" font-weight="900" fill="#0b7887" transform="rotate(-90 36 ${top + boardHeight / 2})">L0 = ${scaleLength} mm</text>`);
+  parts.push(`<text x="74" y="${(top + (fingerboardEndY - top) / 2).toFixed(2)}" text-anchor="middle" font-size="12" font-weight="800" fill="#4b3d32" transform="rotate(-90 74 ${(top + (fingerboardEndY - top) / 2).toFixed(2)})">指板约 ${FINGERBOARD_LENGTH_DEFAULT} mm</text>`);
+  parts.push(`<text x="48" y="${top - 14}" text-anchor="middle" font-size="12" font-weight="800" fill="#6a5a4d">上枕</text>`);
 
   for (let semitone = 0; semitone <= maxSemitone; semitone += 1) {
     const y = yFor(semitone);
@@ -292,7 +287,7 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
     }
   }
 
-  for (const line of DEFAULT_FINGER_LINES) {
+  for (const line of FINGER_LINES) {
     if (line.semitone > maxSemitone) continue;
 
     const y = yFor(line.semitone);
@@ -311,7 +306,7 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
     parts.push(`<text x="${x}" y="${top - 52}" text-anchor="middle" font-size="22" font-weight="900" fill="#16202a">${string.name}</text>`);
     parts.push(`<text x="${x}" y="${top - 34}" text-anchor="middle" font-size="12" font-weight="800" fill="#7a6b5e">${string.openLabel}</text>`);
     parts.push(
-      `<line x1="${x}" y1="${top}" x2="${x}" y2="${top + boardHeight}" stroke="#e8d8bf" stroke-width="${string.width}" stroke-linecap="round"/>`
+      `<line x1="${x}" y1="${top}" x2="${x}" y2="${bridgeY}" stroke="#e8d8bf" stroke-width="${string.width}" stroke-linecap="round"/>`
     );
 
     for (const marker of markers) {
@@ -321,8 +316,6 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
       const labelSize = marker.label.length > 2 ? 8.5 : 10.5;
       const fill = isTonic ? "#14191f" : keyColor;
       const text = isTonic ? "#ffffff" : "#fffdf6";
-      const degreeFill = isTonic ? keyColor : "#ffffff";
-      const degreeText = isTonic ? "#ffffff" : "#24313c";
 
       parts.push(`<g class="note-dot">`);
       parts.push(
@@ -334,19 +327,11 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
       parts.push(
         `<text x="${x}" y="${(y + 3.4).toFixed(2)}" text-anchor="middle" font-size="${labelSize}" font-weight="900" fill="${text}">${escapeXml(marker.label)}</text>`
       );
-      parts.push(
-        `<circle cx="${(x + radius - 1).toFixed(2)}" cy="${(y - radius + 2).toFixed(2)}" r="6.5" fill="${degreeFill}" stroke="${fill}" stroke-width="1.4"/>`
-      );
-      parts.push(
-        `<text x="${(x + radius - 1).toFixed(2)}" y="${(y - radius + 5).toFixed(2)}" text-anchor="middle" font-size="8.5" font-weight="900" fill="${degreeText}">${marker.degree}</text>`
-      );
       parts.push(`</g>`);
     }
   }
 
   parts.push(`<text x="28" y="28" font-size="18" font-weight="900" fill="#16202a">${escapeXml(key.label)} ${mode.label}</text>`);
-  parts.push(`<text x="28" y="50" font-size="12" font-weight="700" fill="#687684">T + ${escapeXml(mode.formula)}</text>`);
-  parts.push(`<text x="28" y="${height - 22}" font-size="12" font-weight="700" fill="#687684">x(n)=L0×(1-2^(-n/12))</text>`);
   parts.push("</svg>");
   return parts.join("");
 }
@@ -382,8 +367,7 @@ function makeCard(key, keyIndex, mode, maxSemitone, scaleLength) {
 
   const meta = document.createElement("p");
   meta.className = "formula-meta";
-  const maxDistance = fingerDistanceMm(maxSemitone, scaleLength);
-  meta.textContent = `n=0-${maxSemitone}，L0=${scaleLength}mm，最大按弦距离=${maxDistance.toFixed(1)}mm`;
+  meta.textContent = "完整指板";
 
   header.append(title, scaleLine);
   card.append(header, media, meta);
@@ -414,13 +398,13 @@ function render() {
   const modeId = getModeId();
   const mode = getMode();
   const keys = selectedKeys(modeId);
-  const maxSemitone = getMaxSemitone();
-  const scaleLength = getScaleLength();
+  const maxSemitone = MAX_SEMITONE;
+  const scaleLength = SCALE_LENGTH_DEFAULT;
 
   resultTitle.textContent = tonicSelect.value === "all"
     ? `全部调 ${mode.label}`
     : `${keys[0]?.label || ""} ${mode.label}`;
-  formulaNote.textContent = `音阶 = T + ${mode.formula}；指位 = L0 × (1 - 2^(-n/12))。`;
+  formulaNote.textContent = "完整指板";
   results.dataset.layout = keys.length === 1 ? "single" : "multi";
   results.replaceChildren(...keys.map((key, index) => makeCard(key, index, mode, maxSemitone, scaleLength)));
   saveState();
@@ -437,10 +421,6 @@ for (const modeInput of filters.querySelectorAll('input[name="mode"]')) {
 
 tonicSelect.addEventListener("input", render);
 tonicSelect.addEventListener("change", render);
-rangeSelect.addEventListener("input", render);
-rangeSelect.addEventListener("change", render);
-scaleLengthInput.addEventListener("input", render);
-scaleLengthInput.addEventListener("change", render);
 
 filters.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -449,8 +429,6 @@ filters.addEventListener("submit", (event) => {
 
 resetButton.addEventListener("click", () => {
   filters.elements.mode.value = "major";
-  rangeSelect.value = String(MAX_SEMITONE_DEFAULT);
-  scaleLengthInput.value = String(SCALE_LENGTH_DEFAULT);
   fillTonicOptions("major", "all");
   render();
 });
@@ -458,12 +436,8 @@ resetButton.addEventListener("click", () => {
 const saved = loadSavedState();
 if (saved) {
   filters.elements.mode.value = saved.mode;
-  rangeSelect.value = saved.range;
-  scaleLengthInput.value = saved.scaleLength;
   fillTonicOptions(saved.mode, saved.tonic);
 } else {
-  rangeSelect.value = String(MAX_SEMITONE_DEFAULT);
-  scaleLengthInput.value = String(SCALE_LENGTH_DEFAULT);
   fillTonicOptions("major", "all");
 }
 
