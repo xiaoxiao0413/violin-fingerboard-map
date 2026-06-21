@@ -40,7 +40,44 @@ select,
 input {
   font: inherit;
 }
+.language-control {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 20;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 7px;
+  border: 1px solid rgba(217, 224, 231, 0.9);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(33, 59, 88, 0.1);
+}
 
+.language-icon {
+  color: var(--teal-dark);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.language-control select {
+  width: 48px;
+  min-height: 28px;
+  padding: 0 18px 0 4px;
+  color: var(--ink);
+  border: 0;
+  background-color: transparent;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.language-control select:focus {
+  outline: 2px solid rgba(11, 120, 135, 0.2);
+  border-color: transparent;
+}
 .app-shell {
   display: grid;
   grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
@@ -565,6 +602,12 @@ h3 {
 }
 
 @media (max-width: 760px) {
+  .language-control {
+    position: static;
+    justify-content: flex-end;
+    width: min(100% - 20px, 560px);
+    margin: 10px auto 0;
+  }
   .app-shell {
     grid-template-columns: 1fr;
     width: min(100% - 20px, 560px);

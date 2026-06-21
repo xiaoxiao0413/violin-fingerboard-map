@@ -3,90 +3,100 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>小提琴指板图 · Violin Fingerboard Chart</title>
+    <title>小提琴指板图</title>
     <link rel="stylesheet" href="styles.css?v=20260614-v4-1">
     <script src="app.js?v=20260614-v4-1" defer></script>
   </head>
   <body>
     <main class="app-shell">
+      <label class="language-control" for="language" aria-label="Language">
+        <span class="language-icon" aria-hidden="true">◎</span>
+        <select id="language" name="language">
+          <option value="zh-Hans">简</option>
+          <option value="zh-Hant">繁</option>
+          <option value="en">EN</option>
+        </select>
+      </label>
+
       <section class="control-panel" aria-labelledby="app-title">
         <div class="brand-block">
-          <p class="eyebrow">Violin Fingerboard Chart</p>
-          <h1 id="app-title">小提琴指板图</h1>
+          <p class="eyebrow" data-i18n="brandEyebrow">小提琴指板图</p>
+          <h1 id="app-title" data-i18n="appTitle">小提琴指板图</h1>
         </div>
 
-
         <section class="fifths-wheel" aria-labelledby="fifths-title">
-          <h2 id="fifths-title">五度圈 · Circle of Fifths</h2>
-          <svg class="fifths-svg" viewBox="0 0 220 220" role="img" aria-label="五度圈 Circle of Fifths">
-            <circle class="fifths-ring" cx="110" cy="110" r="92" />
-            <circle class="fifths-inner-ring" cx="110" cy="110" r="56" />
+          <h2 id="fifths-title" data-i18n="circleTitle">五度圈</h2>
+          <svg class="fifths-svg" viewBox="0 0 250 250" role="img" aria-label="五度圈">
+            <circle class="fifths-ring" cx="125" cy="125" r="92" />
+            <circle class="fifths-inner-ring" cx="125" cy="125" r="56" />
             <g class="fifths-major">
-              <text x="110" y="27">C</text>
-              <text x="152" y="38">G</text>
-              <text x="183" y="69">D</text>
-              <text x="194" y="113">A</text>
-              <text x="183" y="156">E</text>
-              <text x="152" y="184"><tspan x="152">B</tspan><tspan class="fifths-alt" x="152" dy="11">(C♭)</tspan></text>
-              <text x="110" y="195"><tspan x="110">F♯</tspan><tspan class="fifths-alt" x="110" dy="11">(G♭)</tspan></text>
-              <text x="68" y="184"><tspan x="68">D♭</tspan><tspan class="fifths-alt" x="68" dy="11">(C♯)</tspan></text>
-              <text x="37" y="156">A♭</text>
-              <text x="26" y="113">E♭</text>
-              <text x="37" y="69">B♭</text>
-              <text x="68" y="38">F</text>
+              <text x="125" y="17">C</text>
+              <text x="179" y="31">G</text>
+              <text x="219" y="71">D</text>
+              <text x="233" y="125">A</text>
+              <text x="219" y="179">E</text>
+              <text x="179" y="214"><tspan x="179">B</tspan><tspan class="fifths-alt" x="179" dy="11">(C♭)</tspan></text>
+              <text x="125" y="228"><tspan x="125">F♯</tspan><tspan class="fifths-alt" x="125" dy="11">(G♭)</tspan></text>
+              <text x="71" y="214"><tspan x="71">D♭</tspan><tspan class="fifths-alt" x="71" dy="11">(C♯)</tspan></text>
+              <text x="31" y="179">A♭</text>
+              <text x="17" y="125">E♭</text>
+              <text x="31" y="71">B♭</text>
+              <text x="71" y="31">F</text>
             </g>
             <g class="fifths-minor">
-              <text x="110" y="64">a</text>
-              <text x="133" y="70">e</text>
-              <text x="150" y="87">b</text>
-              <text x="156" y="112">f♯</text>
-              <text x="150" y="136">c♯</text>
-              <text x="133" y="154">g♯</text>
-              <text x="110" y="156"><tspan x="110">d♯</tspan><tspan class="fifths-alt" x="110" dy="9">(e♭)</tspan></text>
-              <text x="87" y="150"><tspan x="87">b♭</tspan><tspan class="fifths-alt" x="87" dy="9">(a♯)</tspan></text>
-              <text x="70" y="136">f</text>
-              <text x="64" y="112">c</text>
-              <text x="70" y="87">g</text>
-              <text x="87" y="70">d</text>
+              <text x="125" y="53">a</text>
+              <text x="161" y="63">e</text>
+              <text x="187" y="89">b</text>
+              <text x="197" y="125">f♯</text>
+              <text x="187" y="161">c♯</text>
+              <text x="161" y="187">g♯</text>
+              <text x="125" y="193"><tspan x="125">d♯</tspan><tspan class="fifths-alt" x="125" dy="9">(e♭)</tspan></text>
+              <text x="89" y="183"><tspan x="89">b♭</tspan><tspan class="fifths-alt" x="89" dy="9">(a♯)</tspan></text>
+              <text x="63" y="161">f</text>
+              <text x="53" y="125">c</text>
+              <text x="63" y="89">g</text>
+              <text x="89" y="63">d</text>
             </g>
-            <text class="fifths-center" x="110" y="106">五度圈</text>
-            <text class="fifths-center-sub" x="110" y="123">Major / minor</text>
+            <text class="fifths-center" x="125" y="121" data-i18n="circleCenter">五度圈</text>
+            <text class="fifths-center-sub" x="125" y="138" data-i18n="circleSub">大小调</text>
           </svg>
         </section>
+
         <form class="filters" id="filters">
+
           <fieldset class="field-group">
-            <legend>调式 · Mode</legend>
-            <div class="segmented mode-segmented" role="radiogroup" aria-label="调式 Mode">
+            <legend data-i18n="modeLabel">调式</legend>
+            <div class="segmented mode-segmented" role="radiogroup" aria-label="调式">
               <label>
                 <input type="radio" name="mode" value="major" checked>
-                <span>大调 Major</span>
+                <span data-i18n="majorMode">大调</span>
               </label>
               <label>
                 <input type="radio" name="mode" value="minor">
-                <span>小调 Minor</span>
+                <span data-i18n="minorMode">小调</span>
               </label>
             </div>
           </fieldset>
 
           <label class="field">
-            <span>主音 · Tonic</span>
+            <span data-i18n="tonicLabel">主音</span>
             <select id="tonic" name="tonic"></select>
           </label>
 
           <label class="field">
-            <span>把位 · Position</span>
+            <span data-i18n="positionLabel">把位</span>
             <select id="position" name="position"></select>
           </label>
 
-          <button class="reset-button" type="button" id="reset">重置 · Reset</button>
+          <button class="reset-button" type="button" id="reset" data-i18n="resetButton">重置</button>
         </form>
       </section>
 
       <section class="result-panel" aria-live="polite">
         <div class="result-head">
           <div>
-            <p class="eyebrow">Fingerboard Charts</p>
-            <h2 id="result-title">全部调 · All Keys · 大调 Major</h2>
+            <p class="eyebrow" data-i18n="chartsEyebrow">指板图</p>
+            <h2 id="result-title">全部调 · 大调</h2>
           </div>
         </div>
 
