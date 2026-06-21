@@ -15,6 +15,44 @@
           <h1 id="app-title">小提琴指板图</h1>
         </div>
 
+
+        <section class="fifths-wheel" aria-labelledby="fifths-title">
+          <h2 id="fifths-title">五度圈 · Circle of Fifths</h2>
+          <svg class="fifths-svg" viewBox="0 0 220 220" role="img" aria-label="五度圈 Circle of Fifths">
+            <circle class="fifths-ring" cx="110" cy="110" r="92" />
+            <circle class="fifths-inner-ring" cx="110" cy="110" r="56" />
+            <g class="fifths-major">
+              <text x="110" y="27">C</text>
+              <text x="152" y="38">G</text>
+              <text x="183" y="69">D</text>
+              <text x="194" y="113">A</text>
+              <text x="183" y="156">E</text>
+              <text x="152" y="184"><tspan x="152">B</tspan><tspan class="fifths-alt" x="152" dy="11">(C♭)</tspan></text>
+              <text x="110" y="195"><tspan x="110">F♯</tspan><tspan class="fifths-alt" x="110" dy="11">(G♭)</tspan></text>
+              <text x="68" y="184"><tspan x="68">D♭</tspan><tspan class="fifths-alt" x="68" dy="11">(C♯)</tspan></text>
+              <text x="37" y="156">A♭</text>
+              <text x="26" y="113">E♭</text>
+              <text x="37" y="69">B♭</text>
+              <text x="68" y="38">F</text>
+            </g>
+            <g class="fifths-minor">
+              <text x="110" y="64">a</text>
+              <text x="133" y="70">e</text>
+              <text x="150" y="87">b</text>
+              <text x="156" y="112">f♯</text>
+              <text x="150" y="136">c♯</text>
+              <text x="133" y="154">g♯</text>
+              <text x="110" y="156"><tspan x="110">d♯</tspan><tspan class="fifths-alt" x="110" dy="9">(e♭)</tspan></text>
+              <text x="87" y="150"><tspan x="87">b♭</tspan><tspan class="fifths-alt" x="87" dy="9">(a♯)</tspan></text>
+              <text x="70" y="136">f</text>
+              <text x="64" y="112">c</text>
+              <text x="70" y="87">g</text>
+              <text x="87" y="70">d</text>
+            </g>
+            <text class="fifths-center" x="110" y="106">五度圈</text>
+            <text class="fifths-center-sub" x="110" y="123">Major / minor</text>
+          </svg>
+        </section>
         <form class="filters" id="filters">
           <fieldset class="field-group">
             <legend>调式 · Mode</legend>
@@ -33,6 +71,11 @@
           <label class="field">
             <span>主音 · Tonic</span>
             <select id="tonic" name="tonic"></select>
+          </label>
+
+          <label class="field">
+            <span>把位 · Position</span>
+            <select id="position" name="position"></select>
           </label>
 
           <button class="reset-button" type="button" id="reset">重置 · Reset</button>

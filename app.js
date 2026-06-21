@@ -122,11 +122,44 @@ const KEY_SIGNATURES = {
   },
 };
 
+const CN_NUM = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+
+const POSITIONS = CN_NUM.map((cn, index) => {
+  const p = index + 1;
+  return { id: String(p), order: p, cn, startNote: p + 1, endNote: p + 4 };
+});
+
 const filters = document.querySelector("#filters");
 const tonicSelect = document.querySelector("#tonic");
+const positionSelect = document.querySelector("#position");
 const resultTitle = document.querySelector("#result-title");
 const results = document.querySelector("#results");
 const resetButton = document.querySelector("#reset");
+
+function fillPositionOptions(preferredValue = "all") {
+  positionSelect.replaceChildren();
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "不限把位 · All Positions";
+  positionSelect.append(allOption);
+
+  for (const position of POSITIONS) {
+    const option = document.createElement("option");
+    option.value = position.id;
+    option.textContent = `${position.cn}把位 · Position ${position.order}`;
+    positionSelect.append(option);
+  }
+
+  positionSelect.value = POSITIONS.some((position) => position.id === preferredValue)
+    ? preferredValue
+    : "all";
+}
+
+function getPositionFilter() {
+  if (!positionSelect.value || positionSelect.value === "all") return null;
+  return POSITIONS.find((position) => position.id === positionSelect.value) || null;
+}
 
 function mod12(value) {
   return ((value % 12) + 12) % 12;
@@ -223,6 +256,7 @@ function loadSavedState() {
     return {
       mode: modeId,
       tonic: typeof saved.tonic === "string" ? saved.tonic : "all",
+      position: typeof saved.position === "string" ? saved.position : "all",
     };
   } catch {
     return null;
@@ -236,6 +270,7 @@ function saveState() {
       JSON.stringify({
         mode: getModeId(),
         tonic: tonicSelect.value,
+        position: positionSelect.value,
       })
     );
   } catch {
@@ -300,6 +335,7 @@ function markerStyleForSemitone(semitone, label) {
 
 function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
   const modeId = getModeId();
+  const positionFilter = getPositionFilter();
   const scale = buildScale(key, mode);
   const scaleMap = scaleByPitchClass(scale);
   const width = 420;
@@ -364,17 +400,27 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
       `<line x1="${x}" y1="${top}" x2="${x}" y2="${bridgeY}" stroke="#e8d8bf" stroke-width="${string.width}" stroke-linecap="round"/>`
     );
 
-    for (const marker of markers) {
+    markers.forEach((marker, markerIndex) => {
       const y = yFor(marker.semitone);
       const isTonic = marker.degree === 1;
       const markerStyle = markerStyleForSemitone(marker.semitone, marker.label);
       const fill = isTonic ? "#14191f" : keyColor;
       const text = isTonic ? "#ffffff" : "#fffdf6";
+      const noteOrder = markerIndex + 1;
+      const inPosition = positionFilter
+        ? noteOrder >= positionFilter.startNote && noteOrder <= positionFilter.endNote
+        : null;
+      const dotClass = inPosition === null ? "note-dot" : inPosition ? "note-dot note-in-position" : "note-dot note-dim";
 
-      parts.push(`<g class="note-dot">`);
+      parts.push(`<g class="${dotClass}">`);
       parts.push(
         `<title>${escapeXml(`${string.name} String · ${marker.label}, Scale Degree ${marker.degree}, n=${marker.semitone}, ${marker.distanceMm.toFixed(1)} mm from Nut`)}</title>`
       );
+      if (inPosition) {
+        parts.push(
+          `<circle cx="${x}" cy="${y.toFixed(2)}" r="${(markerStyle.radius + 3.4).toFixed(2)}" fill="none" stroke="#ffce45" stroke-width="2.6"/>`
+        );
+      }
       parts.push(
         `<circle cx="${x}" cy="${y.toFixed(2)}" r="${markerStyle.radius}" fill="${fill}" stroke="#fff7ec" stroke-width="1.8"/>`
       );
@@ -382,7 +428,7 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
         `<text x="${x}" y="${(y + markerStyle.textOffset).toFixed(2)}" text-anchor="middle" font-size="${markerStyle.fontSize.toFixed(1)}" font-weight="900" fill="${text}">${escapeXml(marker.label)}</text>`
       );
       parts.push(`</g>`);
-    }
+    });
   }
 
   parts.push(`<text x="28" y="28" font-size="18" font-weight="900" fill="#16202a">${escapeXml(keyDisplayLabel(key, modeId))} ${mode.label}</text>`);
@@ -452,9 +498,12 @@ function render() {
   const maxSemitone = MAX_SEMITONE;
   const scaleLength = SCALE_LENGTH_DEFAULT;
 
-  resultTitle.textContent = tonicSelect.value === "all"
+  const positionFilter = getPositionFilter();
+  const positionSuffix = positionFilter ? ` · 高亮${positionFilter.cn}把位 Position ${positionFilter.order}` : "";
+
+  resultTitle.textContent = (tonicSelect.value === "all"
     ? `全部调 · All Keys · ${mode.label}`
-    : `${keys[0] ? keyDisplayLabel(keys[0], modeId) : ""} ${mode.label}`;
+    : `${keys[0] ? keyDisplayLabel(keys[0], modeId) : ""} ${mode.label}`) + positionSuffix;
   results.dataset.layout = keys.length === 1 ? "single" : "multi";
   results.replaceChildren(...keys.map((key, index) => makeCard(key, index, mode, maxSemitone, scaleLength)));
   saveState();
@@ -472,6 +521,9 @@ for (const modeInput of filters.querySelectorAll('input[name="mode"]')) {
 tonicSelect.addEventListener("input", render);
 tonicSelect.addEventListener("change", render);
 
+positionSelect.addEventListener("input", render);
+positionSelect.addEventListener("change", render);
+
 filters.addEventListener("submit", (event) => {
   event.preventDefault();
   render();
@@ -480,6 +532,7 @@ filters.addEventListener("submit", (event) => {
 resetButton.addEventListener("click", () => {
   filters.elements.mode.value = "major";
   fillTonicOptions("major", "all");
+  fillPositionOptions("all");
   render();
 });
 
@@ -487,8 +540,10 @@ const saved = loadSavedState();
 if (saved) {
   filters.elements.mode.value = saved.mode;
   fillTonicOptions(saved.mode, saved.tonic);
+  fillPositionOptions(saved.position);
 } else {
   fillTonicOptions("major", "all");
+  fillPositionOptions("all");
 }
 
 render();
