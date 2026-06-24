@@ -555,7 +555,7 @@ h2 {
   background:
     linear-gradient(var(--paper-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--paper-line) 1px, transparent 1px),
-    linear-gradient(180deg, #fff2dd, #ffe7c4);
+    linear-gradient(180deg, #f7cf91, #eeb56b);
   background-size: 22px 22px, 22px 22px, auto;
   cursor: zoom-in;
 }
@@ -616,7 +616,7 @@ h2 {
   background:
     linear-gradient(var(--paper-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--paper-line) 1px, transparent 1px),
-    linear-gradient(180deg, #fff2dd, #ffe7c4);
+    linear-gradient(180deg, #f7cf91, #eeb56b);
   background-size: 22px 22px, 22px 22px, auto;
 }
 

@@ -429,7 +429,7 @@ function makeFingerboardSvg(key, keyIndex, mode, maxSemitone, scaleLength) {
 
   parts.push(`<svg class="fingerboard-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img">`);
   parts.push(`<title>${escapeXml(`${keyDisplayLabel(key, modeId)} ${modeLabel(modeId)} ${t("chartName")}`)}</title>`);
-  parts.push(`<rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="#ffe2b8"/>`);
+  parts.push(`<rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="#f0bd78"/>`);
   parts.push(`<rect x="${boardLeft}" y="${boardTop}" width="${boardRight - boardLeft}" height="${boardBottom - boardTop}" rx="28" fill="#2a211d"/>`);
   parts.push(`<rect x="${boardLeft + 8}" y="${boardTop + 8}" width="${boardRight - boardLeft - 16}" height="${boardBottom - boardTop - 16}" rx="21" fill="#3b2c25"/>`);
   parts.push(`<line x1="${boardLeft + 12}" y1="${top}" x2="${boardRight - 12}" y2="${top}" stroke="#f4ead9" stroke-width="9" stroke-linecap="round"/>`);
