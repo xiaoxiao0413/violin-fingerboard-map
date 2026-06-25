@@ -169,10 +169,12 @@ const FINGER_LINES = [
   { finger: "4", semitone: 7 },
 ];
 
+/* Musical instrument palette: verdigris, violin-red, lapis, amber, forest,
+   amethyst, copper, patina, rosewood, malachite, gold, slate, oxide, sage, plum */
 const KEY_COLORS = [
-  "#0b7887", "#bd4f6c", "#5c7cfa", "#d97706", "#5f7f39",
-  "#b13d75", "#2f8f83", "#7b61c7", "#c65d32", "#2d6a9f",
-  "#9b6b20", "#50724f", "#bc5274", "#397c89", "#8a6a39",
+  "#2e7d77", "#9c2836", "#4a7db5", "#c08010", "#4a7d42",
+  "#8b4a9e", "#c0592a", "#1e5652", "#a84068", "#3a6d60",
+  "#9b6b1a", "#4a6890", "#b0422c", "#547848", "#784060",
 ];
 
 const KEY_SIGNATURES = {
