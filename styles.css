@@ -698,8 +698,10 @@ input[type="number"]:focus {
 
 .fingerboard-svg {
   display: block;
-  width: min(100%, 430px);
+  width: auto;
   height: auto;
+  max-width: min(100%, 430px);
+  max-height: 72vh;
   border-radius: 8px;
   filter: drop-shadow(0 8px 18px rgba(20, 10, 4, 0.12));
 }
