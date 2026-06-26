@@ -1005,3 +1005,35 @@ h3 {
     font-size: 20px;
   }
 }
+
+/* ─── Reserved Ad Slots ──────────────────────────────────────────
+   Hidden placeholders for future ad placements. To go live:
+   remove the "ad-slot--reserved" class from the markup and insert
+   the ad network's embed code inside the container.
+   ──────────────────────────────────────────────────────────────── */
+.ad-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: rgba(237, 227, 206, 0.4);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.ad-slot--reserved {
+  display: none;
+}
+
+.ad-slot--sidebar {
+  width: 100%;
+  min-height: 250px;
+}
+
+.ad-slot--banner {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 90px;
+  margin: 4px 0;
+}

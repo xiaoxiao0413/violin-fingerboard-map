@@ -99,6 +99,10 @@
 
           <button class="reset-button" type="button" id="reset" data-i18n="resetButton">Reset filters</button>
         </form>
+
+        <!-- Reserved ad slot (sidebar, ~300x250). Hidden until traffic justifies running ads.
+             To activate: remove "ad-slot--reserved" class and drop the ad network's embed code inside. -->
+        <div class="ad-slot ad-slot--sidebar ad-slot--reserved" aria-hidden="true" data-ad-slot="sidebar-300x250"></div>
       </section>
 
       <section class="result-panel" aria-live="polite">
@@ -110,6 +114,9 @@
 
         <div id="results" class="diagram-grid"></div>
       </section>
+
+      <!-- Reserved ad slot (full-width banner, ~728x90 / responsive). Hidden until traffic justifies running ads. -->
+      <div class="ad-slot ad-slot--banner ad-slot--reserved" aria-hidden="true" data-ad-slot="banner-728x90"></div>
 
       <section class="seo-notes" aria-labelledby="about-title">
         <h2 id="about-title">About this violin fingerboard chart</h2>
